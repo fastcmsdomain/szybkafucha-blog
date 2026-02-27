@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyprawy w Góry - Przygody Górskie</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .cta-button {
+            background-color: #ff6b6b;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #ff5252;
+        }
+
+        /* Activities Section */
+        .activities {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .activities h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: #667eea;
+        }
+
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .activity-icon {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            color: white;
+        }
+
+        .activity-content {
+            padding: 30px 20px;
+        }
+
+        .activity-content h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .activity-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero p {
+                font-size: 1em;
+            }
+
+            .activities h2 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>🏔️ Wyprawy w Góry</h1>
+        <p>Odkryj przygodę, którą zawsze chciałeś przeżyć</p>
+        <button class="cta-button">Zaplanuj swoją wyprawę</button>
+    </section>
+
+    <!-- Activities Section -->
+    <section class="activities">
+        <h2>6 Aktywności Górskich Przygód</h2>
+        
+        <div class="activity-grid">
+            <!-- Activity 1 -->
+            <div class="activity-card">
+                <div class="activity-icon">🏃‍♂️</div>
+                <div class="activity-content">
+                    <h3>Trekking</h3>
+                    <p>Pokonaj malownicze szlaki i dotarł do niesamowitych widoków. Idealne dla każdego poziomu zaawansowania, od początkujących po doświadczonych turystów.</p>
+                </div>
+            </div>
+
+            <!-- Activity 2 -->
+            <div class="activity-card">
+                <div class="activity-icon">🧗‍♂️</div>
+                <div class="activity-content">
+                    <h3>Wspinaczka Skałowa</h3>
+                    <p>Przetestuj swoje umiejętności i pokonaj najtrudniejsze szczyty. Wyzwanie dla prawdziwych amatorów przygód i adrenaliny.</p>
+                </div>
+            </div>
+
+            <!-- Activity 3 -->
+            <div class="activity-card">
+                <div class="activity-icon">🚴‍♀️</div>
+                <div class="activity-content">
+                    <h3>Jazda na Rowerze Górskim</h3>
+                    <p>Pędzij po górskich ścieżkach na rowerze. Połączenie naturalnego piękna z ekscytującą jazdą na dwóch kółkach.</p>
+                </div>
+            </div>
+
+            <!-- Activity 4 -->
+            <div class="activity-card">
+                <div class="activity-icon">⛺</div>
+                <div class="activity-content">
+                    <h3>Camping pod Gwiazdami</h3>
+                    <p>Spędzenie nocy pod otwartym niebem, otoczony pięknością przyrody. Idealne do bezpośredniego doświadczenia górskiej dzikości.</p>
+                </div>
+            </div>
+
+            <!-- Activity 5 -->
+            <div class="activity-card">
+                <div class="activity-icon">📸</div>
+                <div class="activity-content">
+                    <h3>Fotografia Natury</h3>
+                    <p>Uchwycić słoneczne wschody, dramtyczne nieba i dzikość przyrody. Podziel się swoimi odkryciami ze światem.</p>
+                </div>
+            </div>
+
+            <!-- Activity 6 -->
+            <div class="activity-card">
+                <div class="activity-icon">🌄</div>
+                <div class="activity-content">
+                    <h3>Podgląd Panoramiczny</h3>
+                    <p>Dotarł na szczyty i podziwiaj niekończące się widoki horyzontów. Moment aby zatrzymać się i ocenić wielkość gór.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Wyprawy w Góry. Wszystkie prawa zastrzeżone. | Bezpieczeństwo to nasza prioryteta</p>
+    </footer>
+</body>
+</html>
