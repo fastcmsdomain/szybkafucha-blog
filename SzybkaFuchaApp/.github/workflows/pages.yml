@@ -10,37 +10,40 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Deploy
+        run: |
+          echo "Files ready for GitHub Pages:"
+          ls -la index.html blog/*.html images/ 2>/dev/null || true
+
+  publish:
+    needs: deploy
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Build artifact directory
-        run: |
-          mkdir -p _site
-          cp index.html _site/
-          cp -r blog _site/ || true
-          cp -r images _site/ || true
-          cp .nojekyll _site/
-          ls -la _site/
-
-      - name: Upload artifact
+      - name: Upload to Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '_site'
+          path: '.'
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
