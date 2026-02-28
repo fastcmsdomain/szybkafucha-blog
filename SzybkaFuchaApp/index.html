@@ -1,13 +1,128 @@
 <!DOCTYPE html>
-<html>
+<html lang="pl">
 <head>
-    <title>🎉 SZYBKAFUCHA - CUSTOM DESIGN LIVE 🎉</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SzybkaFucha — Szybkie naprawy domu i ogrodu</title>
+    <meta name="description" content="Codzienne porady na temat szybkich napraw domu i ogrodu dla początkujących">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f9f9f9;
+        }
+        header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .post-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        .post-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .post-card-content {
+            padding: 20px;
+        }
+        .post-card h2 {
+            font-size: 1.3em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .post-card p {
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+            color: #95a5a6;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 10px;
+        }
+        .category-badge {
+            display: inline-block;
+            background: #ff6b35;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+        }
+    </style>
 </head>
-<body style="background: #e94560; color: white; font-family: Arial; text-align: center; padding: 50px;">
-    <h1>✅ CUSTOM DESIGN IS NOW LIVE!</h1>
-    <p>If you see this pink/red background, the cache has cleared!</p>
-    <p>Deployed at: 2026-02-28 01:05 GMT+1</p>
-    <hr>
-    <p><strong>Loading real content...</strong></p>
+<body>
+    <header>
+        <h1>🏠 SzybkaFucha</h1>
+        <p>Szybkie naprawy domu i ogrodu dla początkujących</p>
+    </header>
+
+    <div class="container">
+        <div class="posts-grid">
+            
+    <div class="post-card" onclick="window.location.href='/blog/nieszczelnacy-kran.html'">
+      <img src="/blog/images/2026-02-27-nieszczelnacy-kran.jpg" alt="Jak naprawić nieszczelnący kran w 15 minut">
+      <div class="post-card-content">
+        <h2>Jak naprawić nieszczelnący kran w 15 minut</h2>
+        <p>Szybka i bezpieczna naprawa nieszczelnącego kranu — bez wymywania śmietnika</p>
+        <div class="post-meta">
+          <span>📅 2026-02-27</span>
+          <span>⏱️ 15–20 minut</span>
+        </div>
+      </div>
+    </div>
+  
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SzybkaFucha. Wszystkie prawa zastrzeżone.</p>
+    </footer>
 </body>
 </html>
