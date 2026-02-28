@@ -16,10 +16,11 @@
 
 set -e
 
-# Determine repo root (szybkafuchaapp = repo root for GitHub Pages)
+# Determine the actual git repo root used by GitHub Pages.
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BLOG_DIR="$(dirname "$SCRIPT_DIR")"
-REPO_ROOT="$(dirname "$BLOG_DIR")"  # SzybkaFuchaApp is the repo root
+APP_DIR="$(dirname "$BLOG_DIR")"
+REPO_ROOT="$(dirname "$APP_DIR")"
 
 echo "🚀 Deploying blog to GitHub Pages..."
 echo "   Repo root: $REPO_ROOT"
