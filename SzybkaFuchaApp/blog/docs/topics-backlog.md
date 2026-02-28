@@ -17,7 +17,7 @@
 
 ## OGRÓD (Garden) Topics
 
-- [ ] Jak uprawiać pomidory na balkonie
+- [x] Jak uprawiać pomidory na balkonie ✅ 2026-02-28
 - [ ] Jak zrobić komposter domowy
 - [ ] Jak pozbyć się chwastów naturalnie
 - [ ] Jak zadbać o róże zimą

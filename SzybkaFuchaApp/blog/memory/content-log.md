@@ -28,13 +28,36 @@ Daily record of generated posts, deployment status, and blockers.
 
 ## 2026-02-28
 
-_Ready for tomorrow's post_
+✅ **Post Generated: "Jak uprawiać pomidory na balkonie — od sadzonki do owocu"**
+- Slug: `pomidory-balkon`
+- Topic category: `ogrod` (garden)
+- Difficulty: 1/5
+- Time: 30 minut (przygotowanie) + cotygodniowa pielęgnacja
+- Cost: 80–150 zł
+- Image: ✅ `2026-02-28-pomidory-balkon.jpg` (from Unsplash)
+- Content: ✅ Complete with all sections (intro, paragraphs, tools, steps, mistakes, safety, CTA)
+- Build: ✅ `npm run build` successful (2 posts total)
+- Deploy: ✅ `bash deploy-to-pages.sh` successful
+- Push: ✅ `git push origin master` successful
+- Status: **Published to GitHub**
 
-Use backlog: `docs/topics-backlog.md`
+**Notes:**
+- Second post on schedule
+- Used Unsplash image (free tomato/garden photo)
+- Restored missing template from docs/index.html
+- Both posts now live
 
-Next rotation: **OGRÓD** (garden topic)
+---
 
-Suggested: "Jak uprawiać pomidory na balkonie"
+## 2026-03-01
+
+_Ready for next post_
+
+Next rotation: **DOM** (home topic)
+
+Suggested from backlog: "Jak wymienić uszkodzony gniazdko elektryczne"
+
+Or: "Jak zalepić pęknięcie w ścianie gipsowej"
 
 ---
 
