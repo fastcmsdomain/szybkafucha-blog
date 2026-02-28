@@ -49,15 +49,31 @@ Daily record of generated posts, deployment status, and blockers.
 
 ---
 
+## 2026-02-29
+
+✅ **Post Generated: "Jak zalepić pęknięcie w ścianie gipsowej — prosty poradnik"**
+- Slug: `pekniecie-sciana`
+- Topic category: `dom` (home)
+- Difficulty: 1/5
+- Time: 20–30 minut (+ czas schnięcia)
+- Cost: 30–60 zł
+- Image: ✅ `2026-02-29-pekniecie-sciana.jpg` (from Unsplash - wall repair)
+- Content: ✅ Complete with all sections
+- Build: ✅ `npm run build` successful (3 posts total)
+- Deploy: ✅ Pushed to GitHub
+- Status: **Published to GitHub**
+
+---
+
 ## 2026-03-01
 
 _Ready for next post_
 
-Next rotation: **DOM** (home topic)
+Next rotation: **OGRÓD** (garden topic)
 
-Suggested from backlog: "Jak wymienić uszkodzony gniazdko elektryczne"
+Suggested from backlog: "Jak pozbyć się chwastów naturalnie"
 
-Or: "Jak zalepić pęknięcie w ścianie gipsowej"
+Or: "Jak zrobić komposter domowy"
 
 ---
 

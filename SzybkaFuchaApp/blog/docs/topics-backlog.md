@@ -4,7 +4,7 @@
 
 - [ ] Jak naprawić nieszczelnący kran
 - [ ] Jak wymienić uszkodzony gniazdko elektryczne (bezpiecznie)
-- [ ] Jak zalepić pęknięcie w ścianie gipsowej
+- [x] Jak zalepić pęknięcie w ścianie gipsowej ✅ 2026-02-29
 - [ ] Jak wyczyścić zatkany odpływ
 - [ ] Jak wymienić glazurę w łazience
 - [ ] Jak zainstalować półkę ścienną bez wiercenia
