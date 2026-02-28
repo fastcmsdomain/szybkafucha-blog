@@ -10,27 +10,15 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy
-        run: |
-          echo "Files ready for GitHub Pages:"
-          ls -la index.html blog/*.html images/ 2>/dev/null || true
-
-  publish:
-    needs: deploy
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://fastcmsdomain.github.io/szybkafucha-blog/
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,11 +27,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Upload to Pages
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
