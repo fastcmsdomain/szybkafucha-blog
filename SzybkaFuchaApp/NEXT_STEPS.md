@@ -24,6 +24,31 @@ This regenerates:
 - `blog/public/blog/*.html`
 - `blog/public/images/*`
 
+### Generate hero image
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post komposter-domowy
+```
+
+This uses the local config from `blog/.env`.
+
+Recommended `blog/.env`:
+
+```bash
+REPLICATE_API_TOKEN="r8_your_token_here"
+BLOG_IMAGE_PROVIDER="replicate"
+REPLICATE_IMAGE_MODEL="black-forest-labs/flux-schnell"
+BLOG_AUTO_GENERATE_IMAGES="true"
+```
+
+Optional provider switch:
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post komposter-domowy --provider pollinations
+```
+
 ### Publish
 
 ```bash
@@ -43,6 +68,8 @@ Recurring automation should call exactly this command:
 ```bash
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
 ```
+
+If `BLOG_AUTO_GENERATE_IMAGES="true"` and `REPLICATE_API_TOKEN` exists in `blog/.env`, this publish command will generate missing hero images automatically before the build.
 
 ### OpenClaw UI
 

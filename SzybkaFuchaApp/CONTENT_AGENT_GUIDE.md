@@ -27,7 +27,28 @@ The parent repo root is no longer the place where local automation copies HTML f
 1. Read `blog/BOOT.md`
 2. Pick a topic from `blog/docs/topics-backlog.md`
 3. Create `blog/content/posts/YYYY-MM-DD-slug.md`
-4. Add `blog/content/images/YYYY-MM-DD-slug.jpg` when needed
+4. Generate a hero image when needed:
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post <slug>
+```
+
+Default provider is `replicate`, loaded from `blog/.env`.
+
+Local setup:
+
+1. Put your real `REPLICATE_API_TOKEN` into `blog/.env`
+2. Keep `blog/.env` local only. It is ignored by git via `blog/.gitignore`
+3. Start with `REPLICATE_IMAGE_MODEL="black-forest-labs/flux-schnell"`
+
+Optional provider override:
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post <slug> --provider pollinations
+```
+
 5. Publish with:
 
 ```bash
@@ -64,6 +85,8 @@ Do not point automation at the repo root. The script already resolves:
 
 and runs the correct workflow from `SzybkaFuchaApp/blog`.
 
+When `blog/.env` contains a valid `REPLICATE_API_TOKEN`, `daily-post.sh` also auto-generates missing hero images before the build.
+
 ## Manual commands
 
 ### Local preview
@@ -77,6 +100,20 @@ npm run build
 
 ```bash
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh "Post: Tytul (2026-03-01)"
+```
+
+### Generate a hero image
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post komposter-domowy
+```
+
+### Generate all missing hero images
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --missing
 ```
 
 ## Deployment model

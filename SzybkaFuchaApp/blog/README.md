@@ -22,6 +22,26 @@ This regenerates:
 - `public/blog/*.html`
 - `public/images/*`
 
+## Generate hero image
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post komposter-domowy
+```
+
+Default provider is `replicate` from `blog/.env`.
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --missing
+```
+
+## Local secrets
+
+- `blog/.env` is local-only and ignored by git
+- put `REPLICATE_API_TOKEN` there
+- start with `REPLICATE_IMAGE_MODEL="black-forest-labs/flux-schnell"`
+
 ## Publish
 
 ```bash
@@ -50,6 +70,8 @@ Recommended automation command:
 ```bash
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
 ```
+
+With a valid `blog/.env`, this command auto-generates missing hero images before `npm run build`.
 
 ## Deployment model
 

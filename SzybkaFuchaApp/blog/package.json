@@ -6,7 +6,8 @@
   "main": "scripts/build-posts.mjs",
   "scripts": {
     "build": "node scripts/build-posts.mjs",
-    "deploy": "bash scripts/daily-post.sh"
+    "deploy": "bash scripts/daily-post.sh",
+    "image:hero": "node scripts/generate-hero-image.mjs"
   },
   "author": "SzybkaFucha",
   "license": "MIT",

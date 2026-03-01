@@ -10,7 +10,7 @@ Generate and publish Polish blog posts for SzybkaFucha using only the project fo
 
 1. Pick a topic from `docs/topics-backlog.md`
 2. Create a Markdown post in `content/posts/`
-3. Add an image in `content/images/` when needed
+3. Generate or add an image in `content/images/`
 4. Publish with:
 
 ```bash
@@ -29,6 +29,8 @@ Automation in the OpenClaw UI should always call:
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
 ```
 
+If `blog/.env` contains a valid `REPLICATE_API_TOKEN`, the script will generate missing hero images automatically before build and publish.
+
 For manual one-off publishing from the UI:
 
 ```bash
@@ -46,6 +48,13 @@ bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post
 ```bash
 cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
 npm run build
+```
+
+## Manual image command
+
+```bash
+cd /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog
+npm run image:hero -- --post <slug>
 ```
 
 ## Publish command

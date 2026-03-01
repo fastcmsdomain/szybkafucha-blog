@@ -43,8 +43,14 @@ blog/
   - Copies images
   - Generates index
   - ~200 lines, no npm packages needed
+- **`blog/scripts/generate-hero-image.mjs`** — Hero image generator
+  - Default provider: Replicate from local `blog/.env`
+  - Optional provider: Pollinations
+  - Saves image into `blog/content/images/`
+  - Updates markdown frontmatter automatically
 - **`blog/package.json`** — Node config with npm scripts
   - `npm run build` — Build posts
+  - `npm run image:hero -- --post <slug>` — Generate hero image
   - `npm run deploy` — Build + commit + push
 
 ### 5. ✅ Documentation
@@ -101,7 +107,7 @@ Every post auto-generated must include:
 1. **Read the constitution** → `blog/BOOT.md`
 2. **Pick a topic** → `blog/docs/topics-backlog.md`
 3. **Create post** → `blog/content/posts/YYYY-MM-DD-slug.md`
-4. **Add image** → `blog/content/images/YYYY-MM-DD-slug.jpg`
+4. **Generate image** → `npm run image:hero -- --post <slug>` or add manually to `blog/content/images/YYYY-MM-DD-slug.jpg`
 5. **Build** → `npm run build`
 6. **Deploy** → `npm run deploy`
 7. **Log it** → Update `blog/memory/content-log.md`
