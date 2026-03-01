@@ -26,6 +26,12 @@ const TEMPLATES_DIR = path.join(BLOG_ROOT, 'templates');
 const POST_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'post.html'), 'utf-8');
 const INDEX_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'index.html'), 'utf-8');
 
+function fillTemplate(template, values) {
+  return Object.entries(values).reduce((output, [key, value]) => {
+    return output.replaceAll(`{{${key}}}`, value);
+  }, template);
+}
+
 // Ensure output directories exist
 [PUBLIC_BLOG, PUBLIC_IMAGES].forEach(dir => {
   if (!fs.existsSync(dir)) {
@@ -104,7 +110,7 @@ function buildPost(filename) {
   // Featured image
   let imageHtml = '';
   if (frontmatter.image) {
-    imageHtml = `<div class="featured-image"><img src="/blog/images/${frontmatter.image}" alt="${frontmatter.title}"></div>`;
+    imageHtml = `<div class="featured-image"><img src="../images/${frontmatter.image}" alt="${frontmatter.title}"></div>`;
   }
 
   // Copy image to public folder
@@ -117,16 +123,17 @@ function buildPost(filename) {
   }
 
   // Build HTML
-  let html = POST_TEMPLATE
-    .replace('{{TITLE}}', frontmatter.title || 'Bez tytułu')
-    .replace('{{DATE}}', frontmatter.date || 'Brak daty')
-    .replace('{{TIME}}', frontmatter.time || '—')
-    .replace('{{COST}}', frontmatter.cost || '—')
-    .replace('{{DIFFICULTY}}', frontmatter.difficulty || '?')
-    .replace('{{TAGS}}', tagsHtml)
-    .replace('{{FEATURED_IMAGE}}', imageHtml)
-    .replace('{{DESCRIPTION}}', frontmatter.description || 'SzybkaFucha')
-    .replace('{{CONTENT}}', bodyHtml);
+  let html = fillTemplate(POST_TEMPLATE, {
+    TITLE: frontmatter.title || 'Bez tytułu',
+    DATE: frontmatter.date || 'Brak daty',
+    TIME: frontmatter.time || '—',
+    COST: frontmatter.cost || '—',
+    DIFFICULTY: frontmatter.difficulty || '?',
+    TAGS: tagsHtml,
+    FEATURED_IMAGE: imageHtml,
+    DESCRIPTION: frontmatter.description || 'SzybkaFucha',
+    CONTENT: bodyHtml,
+  });
 
   // Write HTML
   const outPath = path.join(PUBLIC_BLOG, `${frontmatter.slug}.html`);
@@ -152,8 +159,8 @@ function buildIndex(posts) {
   const sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const postsGrid = sortedPosts.map(post => `
-    <div class="post-card" onclick="window.location.href='/blog/${post.slug}.html'">
-      ${post.image ? `<img src="/blog/images/${post.image}" alt="${post.title}">` : ''}
+    <div class="post-card" onclick="window.location.href='blog/${post.slug}.html'">
+      ${post.image ? `<img src="images/${post.image}" alt="${post.title}">` : ''}
       <div class="post-card-content">
         <h2>${post.title}</h2>
         <p>${post.description}</p>
