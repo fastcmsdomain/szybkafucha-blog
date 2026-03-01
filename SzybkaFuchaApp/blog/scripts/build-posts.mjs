@@ -326,7 +326,7 @@ function buildPost(filename) {
     date: frontmatter.date,
     description,
     image: frontmatter.image,
-    time: frontmatter.time,
+    time: timeValue,
     cost: frontmatter.cost,
     tags: frontmatter.tags || [],
   };

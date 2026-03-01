@@ -1,10 +1,13 @@
 ---
+image: "2026-03-01-komposter-domowy.jpg"
 title: "Jak zrobić komposter domowy w 10 minut"
 slug: "komposter-domowy"
 date: 2026-03-01
-category: "ogród"
-excerpt: "Odpadki kuchenne nie muszą trafiać do kosza. Zbuduj prosty komposter i zamieniaj śmieci w naturalne nawozy dla swoich roślin."
-author: "SzybkaFucha"
+description: "Odpadki kuchenne nie muszą trafiać do kosza. Zbuduj prosty komposter i zamieniaj resztki w naturalny nawóz dla roślin."
+difficulty: 1
+time: "10 minut + kilka minut pielęgnacji tygodniowo"
+cost: "30–80 zł"
+tags: ["ogród", "eko", "recykling"]
 ---
 
 # Jak zrobić komposter domowy w 10 minut
