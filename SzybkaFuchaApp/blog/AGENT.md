@@ -17,6 +17,24 @@ Generate and publish Polish blog posts for SzybkaFucha using only the project fo
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
 ```
 
+## OpenClaw UI entrypoint
+
+Primary session:
+
+- `http://127.0.0.1:18789/chat?session=agent%3Amain%3Amain`
+
+Automation in the OpenClaw UI should always call:
+
+```bash
+bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
+```
+
+For manual one-off publishing from the UI:
+
+```bash
+bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh "Post: Tytul (YYYY-MM-DD)"
+```
+
 ## Do not use
 
 - do not copy generated files to repo root
@@ -46,3 +64,4 @@ If no commit message is provided, the script uses:
 - local build succeeds
 - git push to `master` succeeds
 - GitHub Actions deploys the site to GitHub Pages
+- live URLs under `https://fastcmsdomain.github.io/szybkafucha-blog/` work

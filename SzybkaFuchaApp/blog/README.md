@@ -34,6 +34,23 @@ Optional custom message:
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh "Post: Tytul (2026-03-01)"
 ```
 
+## OpenClaw UI
+
+OpenClaw main session:
+
+- `http://127.0.0.1:18789/chat?session=agent%3Amain%3Amain`
+
+Use that session for:
+
+- one-off publish commands
+- recurring automation that runs `daily-post.sh`
+
+Recommended automation command:
+
+```bash
+bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
+```
+
 ## Deployment model
 
 - local build writes only to `public/`

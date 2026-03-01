@@ -34,6 +34,36 @@ The parent repo root is no longer the place where local automation copies HTML f
 bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
 ```
 
+## OpenClaw UI workflow
+
+Use the main OpenClaw UI session:
+
+- `http://127.0.0.1:18789/chat?session=agent%3Amain%3Amain`
+
+### One-off publish from UI
+
+Paste this command into the session:
+
+```bash
+bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh "Post: Tytul (YYYY-MM-DD)"
+```
+
+### Recurring automation in UI
+
+Configure OpenClaw automation to execute:
+
+```bash
+bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post.sh
+```
+
+Do not point automation at the repo root. The script already resolves:
+
+- project root
+- blog root
+- git repo root
+
+and runs the correct workflow from `SzybkaFuchaApp/blog`.
+
 ## Manual commands
 
 ### Local preview
@@ -56,3 +86,11 @@ bash /Users/simacbook/.openclaw/workspace/SzybkaFuchaApp/blog/scripts/daily-post
 - GitHub Actions builds and deploys the Pages artifact from `SzybkaFuchaApp/blog/public`
 
 This avoids copy-to-root deployment and reduces conflicts with other automations in the parent workspace.
+
+## Post-run checks
+
+After OpenClaw automation runs, verify:
+
+1. a new commit appeared on `master`
+2. `Deploy Blog to GitHub Pages` is green in GitHub Actions
+3. the homepage and changed post are visible live on GitHub Pages
