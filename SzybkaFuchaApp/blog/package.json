@@ -6,8 +6,7 @@
   "main": "scripts/build-posts.mjs",
   "scripts": {
     "build": "node scripts/build-posts.mjs",
-    "pages": "npm run build && bash scripts/deploy-to-pages.sh",
-    "deploy": "npm run pages && cd ../.. && git add . && git commit -m 'Post: auto-generated' && git push origin master"
+    "deploy": "bash scripts/daily-post.sh"
   },
   "author": "SzybkaFucha",
   "license": "MIT",
