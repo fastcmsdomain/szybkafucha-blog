@@ -7,51 +7,52 @@ description: "1 zdanie streszczenia"
 difficulty: 1
 time: "15–30 minut"
 cost: "X–Y zł"
-tags: ["dom" or "ogrod", "..."]
+tags: ["dom" lub "ogrod", "..."]
 ---
+
+Ważne:
+- Nie dodawaj na końcu własnego CTA typu "Odwiedź SzybkaFucha.pl". Szablon HTML dodaje CTA automatycznie.
+- `## Wstęp` jest renderowany jako lead pod tytułem. Zachowaj tam 2-3 krótkie zdania.
+- Używaj tylko standardowego markdownu: nagłówki `##`, `###`, listy `-` i `1.`, pogrubienia `**tekst**`.
 
 ## Wstęp
 
-[2-3 sentences: problem, why it matters]
+[2-3 zdania: problem, kontekst, dlaczego temat jest praktyczny]
 
 ## Dlaczego warto to znać?
 
-[1 paragraph: relevance, impact]
+[1 akapit: korzyść, oszczędność czasu lub pieniędzy]
 
 ## Co będziesz potrzebować?
 
 ### Narzędzia
-- Tool 1
-- Tool 2
+- Narzędzie 1
+- Narzędzie 2
 
 ### Materiały
-- Material 1
-- Material 2
+- Materiał 1
+- Materiał 2
 
 ### Koszt
-- Approximate cost range: X–Y zł
+- Szacunkowy koszt: X–Y zł
 
 ## Krok po kroku
 
-1. [First step]
-2. [Second step]
-3. [Third step]
+1. **Krok 1** — opis działania
+2. **Krok 2** — opis działania
+3. **Krok 3** — opis działania
 ...
 
 ## Częste błędy
 
-- ❌ Mistake 1
-- ❌ Mistake 2
-- ❌ Mistake 3
+- ❌ Błąd 1
+- ❌ Błąd 2
+- ❌ Błąd 3
 
 ## Bezpieczeństwo
 
-[Safety warning relevant to the topic. If mains/gas/structural: "Wezwij profesjonalistę."]
+[Krótka uwaga o bezpieczeństwie. Jeśli temat dotyczy prądu, gazu lub konstrukcji: "Wezwij profesjonalistę."]
 
 ## Podsumowanie
 
-[1 paragraph recap]
-
----
-
-**Potrzebujesz więcej porad? Odwiedź SzybkaFucha.pl**
+[1 akapit domykający z krótką zachętą do działania]

@@ -3,151 +3,783 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{TITLE}} | SzybkaFucha</title>
+    <title>{{TITLE}} | SzybkaFucha Blog</title>
     <meta name="description" content="{{DESCRIPTION}}">
+    <meta name="keywords" content="{{TAGS_TEXT}}">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#e94560">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{POST_URL}}">
+    <meta property="og:title" content="{{TITLE}}">
+    <meta property="og:description" content="{{DESCRIPTION}}">
+    <meta property="og:image" content="{{IMAGE_URL}}">
+    <meta property="og:locale" content="pl_PL">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{TITLE}}">
+    <meta name="twitter:description" content="{{DESCRIPTION}}">
+    <meta name="twitter:image" content="{{IMAGE_URL}}">
+    <link rel="canonical" href="{{POST_URL}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@800&display=swap">
     <style>
-        * {
+        :root {
+            --color-primary: #e94560;
+            --color-primary-dark: #d13a54;
+            --color-secondary: #1a1a2e;
+            --color-white: #ffffff;
+            --color-surface: #f9fafb;
+            --color-card: #ffffff;
+            --color-border: #e5e7eb;
+            --color-text: #1f2937;
+            --color-text-muted: #4b5563;
+            --color-text-soft: #6b7280;
+            --color-footer-bg: #111827;
+            --color-footer-surface: #1f2937;
+            --color-footer-text: #d1d5db;
+            --color-footer-muted: #9ca3af;
+            --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-heading: "Nunito", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --shadow-card: 0 20px 45px rgba(17, 24, 39, 0.08);
+            --shadow-card-hover: 0 28px 55px rgba(17, 24, 39, 0.14);
+            --shadow-header: 0 10px 35px rgba(17, 24, 39, 0.06);
+            --radius-md: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+            --radius-full: 999px;
+            --header-height: 64px;
+            --container-width: 1120px;
+            --transition-base: 0.25s ease;
+        }
+
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: var(--font-body);
             line-height: 1.6;
-            color: #333;
-            background: #f9f9f9;
+            color: var(--color-text);
+            background:
+                radial-gradient(circle at top left, rgba(233, 69, 96, 0.1), transparent 28%),
+                radial-gradient(circle at top right, rgba(26, 26, 46, 0.08), transparent 24%),
+                var(--color-surface);
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+
+        body.menu-open {
+            overflow: hidden;
         }
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #ff6b35;
-            padding-bottom: 20px;
+
+        a {
+            color: inherit;
+            text-decoration: none;
         }
-        h1 {
-            font-size: 2em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        .meta {
-            font-size: 0.9em;
-            color: #7f8c8d;
-            margin: 10px 0;
-        }
-        .meta span {
-            margin-right: 15px;
-        }
-        .meta .badge {
-            display: inline-block;
-            background: #ff6b35;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.85em;
-            margin-right: 5px;
-        }
-        .featured-image {
-            margin: 30px 0;
-            text-align: center;
-        }
-        .featured-image img {
+
+        img {
+            display: block;
             max-width: 100%;
+        }
+
+        .container {
+            width: min(100% - 32px, var(--container-width));
+            margin: 0 auto;
+        }
+
+        .skip-link {
+            position: absolute;
+            left: -9999px;
+            top: auto;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+
+        .skip-link:focus {
+            left: 16px;
+            top: 16px;
+            width: auto;
             height: auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            padding: 0.75rem 1rem;
+            background: var(--color-secondary);
+            color: var(--color-white);
+            border-radius: var(--radius-md);
+            z-index: 200;
         }
-        main {
-            font-size: 1.1em;
-            line-height: 1.8;
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(229, 231, 235, 0.9);
+            box-shadow: var(--shadow-header);
         }
-        h2 {
-            font-size: 1.5em;
-            color: #2c3e50;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-left: 4px solid #ff6b35;
-            padding-left: 15px;
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: var(--header-height);
         }
-        h3 {
-            font-size: 1.2em;
-            color: #34495e;
-            margin-top: 20px;
-            margin-bottom: 10px;
+
+        .header__logo,
+        .footer__logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
         }
-        p {
-            margin-bottom: 15px;
-            text-align: justify;
+
+        .logo-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            flex-shrink: 0;
+            font-size: 1.25rem;
+            color: var(--color-white);
+            background: var(--color-primary);
+            border-radius: 0.75rem;
         }
-        ul, ol {
-            margin: 15px 0 15px 30px;
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--color-secondary);
+            letter-spacing: -0.02em;
         }
-        li {
-            margin-bottom: 8px;
+
+        .logo-text b {
+            color: var(--color-primary);
         }
-        .tools-section, .steps-section, .mistakes-section, .safety-section {
-            background: #f0f8ff;
-            padding: 20px;
-            border-left: 4px solid #ff6b35;
-            margin: 20px 0;
-            border-radius: 4px;
+
+        .header__nav {
+            display: none;
+            align-items: center;
+            gap: 1.25rem;
         }
-        .safety-section {
-            background: #fff3cd;
-            border-left-color: #ff6b35;
+
+        .nav-link {
+            color: var(--color-text-muted);
+            font-size: 0.97rem;
+            font-weight: 600;
+            transition: color var(--transition-base), background-color var(--transition-base);
         }
-        .cta {
-            background: #ff6b35;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
+
+        .nav-link:hover,
+        .nav-link:focus-visible {
+            color: var(--color-primary);
+        }
+
+        .nav-link--cta {
+            padding: 0.72rem 1rem;
+            border-radius: var(--radius-md);
+            background: var(--color-primary);
+            color: var(--color-white);
+            box-shadow: 0 12px 24px rgba(233, 69, 96, 0.2);
+        }
+
+        .nav-link--cta:hover,
+        .nav-link--cta:focus-visible {
+            color: var(--color-white);
+            background: var(--color-primary-dark);
+        }
+
+        .mobile-menu-btn {
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 2.5rem;
+            height: 2.5rem;
+            border: 0;
+            background: transparent;
+            color: var(--color-text);
+            cursor: pointer;
+        }
+
+        .mobile-menu-btn span {
+            width: 100%;
+            height: 2px;
+            border-radius: 999px;
+            background: currentColor;
+            transition: transform var(--transition-base), opacity var(--transition-base);
+        }
+
+        .mobile-menu-btn[aria-expanded="true"] span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .mobile-menu-btn[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn[aria-expanded="true"] span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            right: 0;
+            z-index: 90;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid var(--color-border);
+            box-shadow: 0 24px 60px rgba(17, 24, 39, 0.08);
+            transform: translateY(-110%);
+            opacity: 0;
+            visibility: hidden;
+            transition: transform var(--transition-base), opacity var(--transition-base), visibility var(--transition-base);
+        }
+
+        .mobile-nav.active {
+            transform: translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav nav {
+            display: grid;
+            gap: 0.75rem;
+            padding: 1.25rem 1rem 1.5rem;
+        }
+
+        .mobile-nav__link {
+            display: block;
+            padding: 0.9rem 1rem;
+            border-radius: var(--radius-md);
             text-align: center;
-            margin-top: 40px;
-            font-size: 1.1em;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text);
+            background: #f3f4f6;
+            transition: background-color var(--transition-base), color var(--transition-base);
+        }
+
+        .mobile-nav__link:hover,
+        .mobile-nav__link:focus-visible {
+            background: #e5e7eb;
+        }
+
+        .mobile-nav__link--cta {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .mobile-nav__link--cta:hover,
+        .mobile-nav__link--cta:focus-visible {
+            background: var(--color-primary-dark);
+        }
+
+        .article-page {
+            padding-top: calc(var(--header-height) + 1.75rem);
+            padding-bottom: 4.5rem;
+            min-height: 100vh;
+        }
+
+        .article-hero {
+            padding: 1.5rem 0 1.25rem;
+        }
+
+        .article-breadcrumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--color-text-soft);
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .article-breadcrumb a {
+            color: var(--color-text-muted);
             font-weight: 600;
         }
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ecf0f1;
-            color: #7f8c8d;
-            font-size: 0.9em;
+
+        .article-breadcrumb a:hover,
+        .article-breadcrumb a:focus-visible {
+            color: var(--color-primary);
+        }
+
+        .article-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.95rem, 3.1vw, 3rem);
+            line-height: 1.15;
+            color: #111827;
+            max-width: 900px;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .article-meta__item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(229, 231, 235, 0.92);
+            color: var(--color-text-muted);
+            font-size: 0.94rem;
+            font-weight: 600;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .article-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.42rem 0.8rem;
+            border-radius: var(--radius-full);
+            background: rgba(233, 69, 96, 0.1);
+            color: var(--color-primary);
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .article-shell {
+            padding-bottom: 2rem;
+        }
+
+        .article-cover {
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow: 0 16px 40px rgba(17, 24, 39, 0.14);
+            margin: 0 auto;
+            max-width: 980px;
+        }
+
+        .article-cover img {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        .article-card {
+            max-width: 900px;
+            margin: -2rem auto 0;
+            background: var(--color-card);
+            border-radius: 1.25rem;
+            box-shadow: 0 14px 40px rgba(17, 24, 39, 0.08);
+            padding: clamp(1.3rem, 2.5vw, 2.25rem);
+            position: relative;
+            z-index: 2;
+        }
+
+        .article-card--no-cover {
+            margin-top: 0;
+        }
+
+        .article-lead {
+            font-size: 1.12rem;
+            line-height: 1.78;
+            color: #1f2937;
+            margin-bottom: 1.6rem;
+            font-weight: 500;
+        }
+
+        .article-body {
+            color: #374151;
+            line-height: 1.85;
+            font-size: 1.03rem;
+        }
+
+        .article-body h2 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            line-height: 1.3;
+            color: #111827;
+            margin: 2rem 0 0.85rem;
+        }
+
+        .article-body h3 {
+            font-size: 1.05rem;
+            line-height: 1.4;
+            color: #111827;
+            margin: 1.4rem 0 0.65rem;
+        }
+
+        .article-body p {
+            margin-bottom: 1rem;
+        }
+
+        .article-body ul,
+        .article-body ol {
+            margin: 0.6rem 0 1.25rem 1.35rem;
+        }
+
+        .article-body li {
+            margin-bottom: 0.6rem;
+            padding-left: 0.15rem;
+        }
+
+        .article-body strong {
+            color: #111827;
+        }
+
+        .article-cta {
+            margin-top: 1.75rem;
+            padding: 1rem 1.1rem;
+            border-left: 4px solid var(--color-primary);
+            background: #fff5f7;
+            border-radius: 0.9rem;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .article-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 1.8rem;
+        }
+
+        .article-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            padding: 0.78rem 1rem;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        .article-btn:hover,
+        .article-btn:focus-visible {
+            transform: translateY(-2px);
+        }
+
+        .article-btn--primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            box-shadow: 0 10px 24px rgba(233, 69, 96, 0.35);
+        }
+
+        .article-btn--primary:hover,
+        .article-btn--primary:focus-visible {
+            background: var(--color-primary-dark);
+        }
+
+        .article-btn--ghost {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .footer {
+            background: var(--color-footer-bg);
+            color: var(--color-footer-text);
+            padding: 3.5rem 0 1.75rem;
+        }
+
+        .footer__main {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .footer__tagline {
+            margin-top: 1rem;
+            color: var(--color-footer-muted);
+            max-width: 320px;
+        }
+
+        .footer__social {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 999px;
+            color: var(--color-white);
+            background: rgba(255, 255, 255, 0.08);
+            transition: background-color var(--transition-base), transform var(--transition-base);
+        }
+
+        .social-link:hover,
+        .social-link:focus-visible {
+            background: rgba(233, 69, 96, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .footer__nav {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .footer__col h4 {
+            font-size: 1rem;
+            color: var(--color-white);
+            margin-bottom: 0.85rem;
+        }
+
+        .footer__col ul {
+            list-style: none;
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .footer__col a {
+            color: var(--color-footer-muted);
+        }
+
+        .footer__col a:hover,
+        .footer__col a:focus-visible {
+            color: var(--color-white);
+        }
+
+        .footer__bottom {
+            margin-top: 2.25rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            color: var(--color-footer-muted);
+            font-size: 0.95rem;
+        }
+
+        @media (min-width: 900px) {
+            .header__nav {
+                display: inline-flex;
+            }
+
+            .mobile-menu-btn,
+            .mobile-nav {
+                display: none;
+            }
+
+            .footer__main,
+            .footer__nav {
+                grid-template-columns: minmax(0, 1fr) auto;
+                align-items: start;
+            }
+
+            .footer__nav {
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .article-page {
+                padding-top: calc(var(--header-height) + 1rem);
+            }
+
+            .article-card {
+                margin-top: -1.25rem;
+            }
+
+            .article-card--no-cover {
+                margin-top: 0;
+            }
         }
     </style>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": "{{TITLE}}",
+            "description": "{{DESCRIPTION}}",
+            "image": "{{IMAGE_URL}}",
+            "datePublished": "{{DATE}}",
+            "dateModified": "{{DATE}}",
+            "author": {
+                "@type": "Organization",
+                "name": "SzybkaFucha"
+            },
+            "publisher": {
+                "@type": "Organization",
+                "name": "SzybkaFucha"
+            },
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "{{POST_URL}}"
+            }
+        }
+    </script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>{{TITLE}}</h1>
-            <div class="meta">
-                <span>📅 {{DATE}}</span>
-                <span>⏱️ {{TIME}}</span>
-                <span>💰 {{COST}}</span>
-                <span class="badge">Difficulty: {{DIFFICULTY}}/5</span>
-                {{TAGS}}
-            </div>
-        </header>
+    <a href="#main" class="skip-link">Przejdź do głównej treści</a>
 
-        {{FEATURED_IMAGE}}
-
-        <main>
-            {{CONTENT}}
-        </main>
-
-        <div class="cta">
-            Potrzebujesz więcej porad? Odwiedź <strong>SzybkaFucha.pl</strong>
+    <header class="header" role="banner">
+        <div class="container">
+            <a class="header__logo" href="../index.html#top" aria-label="SzybkaFucha Blog">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Szybka<b>Fucha</b></span>
+            </a>
+            <nav class="header__nav" aria-label="Główna nawigacja">
+                <a href="../index.html#top" class="nav-link">Start</a>
+                <a href="../index.html#posts" class="nav-link">Najnowsze wpisy</a>
+                <a href="#site-footer" class="nav-link">O blogu</a>
+                <a href="https://www.facebook.com/61585993722753" target="_blank" rel="noreferrer" class="nav-link">Facebook</a>
+                <a href="../index.html#posts" class="nav-link nav-link--cta">Czytaj poradniki</a>
+            </nav>
+            <button class="mobile-menu-btn" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobile-nav">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
+    </header>
 
-        <footer>
-            <p>&copy; 2026 SzybkaFucha. Wszystkie prawa zastrzeżone.</p>
-        </footer>
+    <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
+        <nav aria-label="Menu mobilne">
+            <a href="../index.html#top" class="mobile-nav__link">Start</a>
+            <a href="../index.html#posts" class="mobile-nav__link">Najnowsze wpisy</a>
+            <a href="#site-footer" class="mobile-nav__link">O blogu</a>
+            <a href="https://www.facebook.com/61585993722753" target="_blank" rel="noreferrer" class="mobile-nav__link">Facebook</a>
+            <a href="../index.html#posts" class="mobile-nav__link mobile-nav__link--cta">Czytaj poradniki</a>
+        </nav>
     </div>
+
+    <main id="main" class="article-page">
+        <section class="article-hero">
+            <div class="container">
+                <div class="article-breadcrumb" aria-label="Breadcrumb">
+                    <a href="../index.html#top">Start</a>
+                    <span>/</span>
+                    <a href="../index.html#posts">Blog</a>
+                    <span>/</span>
+                    <span aria-current="page">{{TITLE}}</span>
+                </div>
+                <h1 class="article-title">{{TITLE}}</h1>
+                <div class="article-meta">
+                    <span class="article-meta__item">📅 {{FORMATTED_DATE}}</span>
+                    <span class="article-meta__item">⏱️ {{TIME_LABEL}}: {{TIME}}</span>
+                    <span class="article-meta__item">💸 Koszt: {{COST}}</span>
+                    <span class="article-meta__item">🛠️ Poziom: {{DIFFICULTY}}/5</span>
+                </div>
+                <div class="article-tags">
+                    {{TAGS}}
+                </div>
+            </div>
+        </section>
+
+        <section class="article-shell">
+            <div class="container">
+                {{FEATURED_IMAGE}}
+
+                <article class="article-card{{NO_COVER_CLASS}}">
+                    <p class="article-lead">{{LEAD}}</p>
+                    <div class="article-body">
+                        {{CONTENT}}
+                    </div>
+
+                    <div class="article-cta">
+                        Masz podobny temat do ogarnięcia? Wróć do listy poradników albo obserwuj nas na Facebooku po kolejne praktyczne wskazówki.
+                    </div>
+
+                    <div class="article-actions">
+                        <a class="article-btn article-btn--primary" href="../index.html#posts">Czytaj więcej poradników</a>
+                        <a class="article-btn article-btn--ghost" href="https://www.facebook.com/61585993722753" target="_blank" rel="noreferrer">Facebook</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer id="site-footer" class="footer" role="contentinfo">
+        <div class="container">
+            <div class="footer__main">
+                <div class="footer__brand">
+                    <div class="footer__logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">Szybka<b>Fucha</b></span>
+                    </div>
+                    <p class="footer__tagline">Krótke poradniki domowe i ogrodowe dla osób, które chcą szybko ogarniać drobne zadania.</p>
+                    <div class="footer__social">
+                        <a href="https://www.facebook.com/61585993722753" target="_blank" rel="noreferrer" class="social-link" aria-label="Facebook">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <nav class="footer__nav" aria-label="Stopka">
+                    <div class="footer__col">
+                        <h4>Blog</h4>
+                        <ul>
+                            <li><a href="../index.html#top">Start</a></li>
+                            <li><a href="../index.html#posts">Najnowsze wpisy</a></li>
+                            <li><a href="../index.html#posts">Czytaj poradniki</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__col">
+                        <h4>Społeczność</h4>
+                        <ul>
+                            <li><a href="https://www.facebook.com/61585993722753" target="_blank" rel="noreferrer">Facebook</a></li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="footer__bottom">
+                <p>&copy; 2026 SzybkaFucha Blog. Wszystkie prawa zastrzeżone.</p>
+                <p>Praktyczne poradniki dla domu i ogrodu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuButton = document.querySelector('.mobile-menu-btn');
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileLinks = document.querySelectorAll('.mobile-nav a');
+
+        function setMenuState(isOpen) {
+            if (!menuButton || !mobileNav) return;
+            menuButton.setAttribute('aria-expanded', String(isOpen));
+            mobileNav.classList.toggle('active', isOpen);
+            mobileNav.setAttribute('aria-hidden', String(!isOpen));
+            document.body.classList.toggle('menu-open', isOpen);
+        }
+
+        if (menuButton && mobileNav) {
+            menuButton.addEventListener('click', () => {
+                const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+                setMenuState(!isOpen);
+            });
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => setMenuState(false));
+            });
+
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') {
+                    setMenuState(false);
+                }
+            });
+        }
+    </script>
 </body>
 </html>

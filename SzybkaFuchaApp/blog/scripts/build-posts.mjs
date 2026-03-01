@@ -25,6 +25,7 @@ const PUBLIC_IMAGES = path.join(BLOG_ROOT, 'public', 'images');
 const TEMPLATES_DIR = path.join(BLOG_ROOT, 'templates');
 const POST_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'post.html'), 'utf-8');
 const INDEX_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'index.html'), 'utf-8');
+const SITE_URL = 'https://fastcmsdomain.github.io/szybkafucha-blog';
 
 function fillTemplate(template, values) {
   return Object.entries(values).reduce((output, [key, value]) => {
@@ -69,22 +70,174 @@ function parseFrontmatter(content) {
 }
 
 /**
- * Convert Markdown to HTML (simple converter)
+ * Minimal markdown utilities for blog posts.
  */
-function markdownToHtml(md) {
-  let html = md
-    .replace(/^### (.*?)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.*?)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
-    .replace(/^\- (.*?)$/gm, '<li>$1</li>')
-    .replace(/^(\d+)\. (.*?)$/gm, '<li>$1. $2</li>')
-    .replace(/(?:<li>.*?<\/li>\n?)+/s, match => '<ul>' + match + '</ul>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/\n\n+/g, '</p><p>')
-    .replace(/^(.+)$/gm, '<p>$1</p>');
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
-  return html;
+function applyInlineFormatting(text) {
+  const escaped = escapeHtml(text);
+
+  return escaped
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>');
+}
+
+function normalizeMarkdown(md) {
+  return md
+    .replace(/\r\n/g, '\n')
+    .replace(/^# .*\n+/m, '')
+    .replace(/\n---\s*\n\*\*Potrzebujesz[\s\S]*$/m, '')
+    .trim();
+}
+
+function formatDatePl(dateValue) {
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) {
+    return dateValue || 'Brak daty';
+  }
+
+  return new Intl.DateTimeFormat('pl-PL', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date);
+}
+
+function estimateReadingTime(text) {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.ceil(words / 180));
+  return `${minutes} min czytania`;
+}
+
+function markdownToArticle(md) {
+  const normalized = normalizeMarkdown(md);
+  const lines = normalized.split('\n');
+  const blocks = [];
+
+  let paragraph = [];
+  let listType = null;
+  let listItems = [];
+  let lead = '';
+  let awaitingLead = false;
+
+  function flushParagraph() {
+    if (paragraph.length === 0) return;
+
+    const text = paragraph.join(' ').trim();
+    if (!text) {
+      paragraph = [];
+      return;
+    }
+
+    if (!lead && awaitingLead) {
+      lead = text;
+      awaitingLead = false;
+    } else {
+      blocks.push(`<p>${applyInlineFormatting(text)}</p>`);
+    }
+
+    paragraph = [];
+  }
+
+  function flushList() {
+    if (!listType || listItems.length === 0) return;
+
+    const tag = listType === 'ol' ? 'ol' : 'ul';
+    const items = listItems.map(item => `<li>${applyInlineFormatting(item)}</li>`).join('');
+    blocks.push(`<${tag}>${items}</${tag}>`);
+    listType = null;
+    listItems = [];
+  }
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+
+    if (!line) {
+      flushParagraph();
+      continue;
+    }
+
+    const orderedMatch = line.match(/^(\d+)\.\s+(.*)$/);
+    const unorderedMatch = line.match(/^- (.*)$/);
+    const h2Match = line.match(/^##\s+(.*)$/);
+    const h3Match = line.match(/^###\s+(.*)$/);
+
+    if (h2Match) {
+      flushParagraph();
+      flushList();
+
+      const heading = h2Match[1].trim();
+      if (!lead && heading.toLowerCase() === 'wstęp') {
+        awaitingLead = true;
+      } else {
+        awaitingLead = false;
+        blocks.push(`<h2>${applyInlineFormatting(heading)}</h2>`);
+      }
+      continue;
+    }
+
+    if (h3Match) {
+      flushParagraph();
+      flushList();
+      awaitingLead = false;
+      blocks.push(`<h3>${applyInlineFormatting(h3Match[1].trim())}</h3>`);
+      continue;
+    }
+
+    if (orderedMatch) {
+      flushParagraph();
+      awaitingLead = false;
+      if (listType !== 'ol') {
+        flushList();
+        listType = 'ol';
+      }
+      listItems.push(orderedMatch[2].trim());
+      continue;
+    }
+
+    if (unorderedMatch) {
+      flushParagraph();
+      awaitingLead = false;
+      if (listType !== 'ul') {
+        flushList();
+        listType = 'ul';
+      }
+      listItems.push(unorderedMatch[1].trim());
+      continue;
+    }
+
+    flushList();
+    paragraph.push(line);
+  }
+
+  flushParagraph();
+  flushList();
+
+  if (!lead) {
+    const firstParagraphIndex = blocks.findIndex(block => block.startsWith('<p>'));
+    if (firstParagraphIndex >= 0) {
+      lead = blocks[firstParagraphIndex]
+        .replace(/^<p>/, '')
+        .replace(/<\/p>$/, '')
+        .replace(/<[^>]+>/g, '');
+      blocks.splice(firstParagraphIndex, 1);
+    }
+  }
+
+  return {
+    lead: applyInlineFormatting(lead || 'Praktyczny poradnik krok po kroku dla osób, które chcą szybko uporać się z zadaniem.'),
+    bodyHtml: blocks
+      .join('\n')
+      .replace(/<\/ol>\s*<ol>/g, '')
+      .replace(/<\/ul>\s*<ul>/g, ''),
+  };
 }
 
 /**
@@ -100,17 +253,37 @@ function buildPost(filename) {
     return null;
   }
 
-  const bodyHtml = markdownToHtml(body);
+  if (!frontmatter.description && frontmatter.excerpt) {
+    frontmatter.description = frontmatter.excerpt;
+  }
+
+  if (!frontmatter.tags && frontmatter.category) {
+    frontmatter.tags = [frontmatter.category];
+  }
+
+  const article = markdownToArticle(body);
+  const description = frontmatter.description || article.lead.replace(/<[^>]+>/g, '');
+  const readingTime = estimateReadingTime(body);
+  const timeLabel = frontmatter.time ? 'Czas pracy' : 'Czas czytania';
+  const timeValue = frontmatter.time || readingTime;
+  const difficultyValue = frontmatter.difficulty || '1';
+  const postUrl = `${SITE_URL}/blog/${frontmatter.slug}.html`;
+  const imageUrl = frontmatter.image ? `${SITE_URL}/images/${frontmatter.image}` : '';
+  const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
   
   // Build tags HTML
-  const tagsHtml = frontmatter.tags
-    ? frontmatter.tags.map(tag => `<span class="category-badge">${tag}</span>`).join('')
-    : '';
+  const tagsHtml = tags
+    .map(tag => `<span class="article-tag">${escapeHtml(tag)}</span>`)
+    .join('');
 
   // Featured image
   let imageHtml = '';
   if (frontmatter.image) {
-    imageHtml = `<div class="featured-image"><img src="../images/${frontmatter.image}" alt="${frontmatter.title}"></div>`;
+    imageHtml = `
+      <div class="article-cover">
+        <img src="../images/${frontmatter.image}" alt="${escapeHtml(frontmatter.title)}" loading="eager">
+      </div>
+    `;
   }
 
   // Copy image to public folder
@@ -126,13 +299,20 @@ function buildPost(filename) {
   let html = fillTemplate(POST_TEMPLATE, {
     TITLE: frontmatter.title || 'Bez tytułu',
     DATE: frontmatter.date || 'Brak daty',
-    TIME: frontmatter.time || '—',
-    COST: frontmatter.cost || '—',
-    DIFFICULTY: frontmatter.difficulty || '?',
+    FORMATTED_DATE: formatDatePl(frontmatter.date),
+    TIME: timeValue,
+    TIME_LABEL: timeLabel,
+    COST: frontmatter.cost || 'Według materiałów',
+    DIFFICULTY: difficultyValue,
     TAGS: tagsHtml,
     FEATURED_IMAGE: imageHtml,
-    DESCRIPTION: frontmatter.description || 'SzybkaFucha',
-    CONTENT: bodyHtml,
+    NO_COVER_CLASS: frontmatter.image ? '' : ' article-card--no-cover',
+    DESCRIPTION: description,
+    CONTENT: article.bodyHtml,
+    LEAD: article.lead,
+    POST_URL: postUrl,
+    IMAGE_URL: imageUrl,
+    TAGS_TEXT: escapeHtml(tags.join(', ') || 'dom, ogród, poradniki'),
   });
 
   // Write HTML
@@ -144,7 +324,7 @@ function buildPost(filename) {
     title: frontmatter.title,
     slug: frontmatter.slug,
     date: frontmatter.date,
-    description: frontmatter.description,
+    description,
     image: frontmatter.image,
     time: frontmatter.time,
     cost: frontmatter.cost,
