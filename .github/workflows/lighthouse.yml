@@ -1,24 +1,18 @@
-name: Deploy Blog to GitHub Pages
+name: Lighthouse Audit
 
 on:
   push:
     branches: ["master"]
     paths:
       - "SzybkaFuchaApp/blog/**"
-      - ".github/workflows/pages.yml"
+      - ".github/workflows/lighthouse.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: true
 
 jobs:
-  build:
+  lighthouse:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,6 +28,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y webp libavif-bin
 
+      - name: Install Lighthouse CLI
+        run: npm install -g lighthouse
+
       - name: Generate image variants
         working-directory: SzybkaFuchaApp/blog
         run: npm run images:optimize
@@ -42,21 +39,12 @@ jobs:
         working-directory: SzybkaFuchaApp/blog
         run: npm run build
 
-      - name: Disable Jekyll
-        run: touch SzybkaFuchaApp/blog/public/.nojekyll
+      - name: Run Lighthouse audits
+        working-directory: SzybkaFuchaApp/blog
+        run: npm run audit:lighthouse
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload Lighthouse reports
+        uses: actions/upload-artifact@v4
         with:
-          path: SzybkaFuchaApp/blog/public
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          name: lighthouse-reports
+          path: SzybkaFuchaApp/blog/audit/lighthouse

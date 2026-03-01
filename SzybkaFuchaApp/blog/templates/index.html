@@ -327,25 +327,32 @@
         }
 
         .post-card {
+            display: block;
             background: var(--color-card);
             border-radius: var(--radius-lg);
             overflow: hidden;
             box-shadow: var(--shadow-card);
             border: 1px solid rgba(229, 231, 235, 0.9);
             transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
-            cursor: pointer;
         }
 
-        .post-card:hover {
+        .post-card:hover,
+        .post-card:focus-visible {
             transform: translateY(-6px);
             box-shadow: var(--shadow-card-hover);
             border-color: rgba(233, 69, 96, 0.25);
+        }
+
+        .post-card:focus-visible {
+            outline: 3px solid rgba(233, 69, 96, 0.35);
+            outline-offset: 3px;
         }
 
         .post-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
         }
 
         .post-card-content {
@@ -530,8 +537,8 @@
             </a>
 
             <nav class="header__nav" aria-label="Główna nawigacja">
-                <a href="https://blog.szybkafucha.app/" class="nav-link">Najnowsze wpisy</a>
-                <a href="https://szybkafucha.app/" class="nav-link nav-link--cta">Start</a>
+                <a href="#posts" class="nav-link">Najnowsze wpisy</a>
+                <a href="#top" class="nav-link nav-link--cta">Start</a>
             </nav>
 
             <button class="mobile-menu-btn" type="button" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobile-nav">
@@ -544,8 +551,8 @@
 
     <div class="mobile-nav" id="mobile-nav" aria-hidden="true">
         <nav aria-label="Menu mobilne">
-            <a href="https://szybkafucha.app/" class="mobile-nav__link">Start</a>
-            <a href="https://blog.szybkafucha.app/" class="mobile-nav__link">Najnowsze wpisy</a>
+            <a href="#top" class="mobile-nav__link">Start</a>
+            <a href="#posts" class="mobile-nav__link">Najnowsze wpisy</a>
         </nav>
     </div>
 
@@ -595,8 +602,8 @@
                     <div class="footer__col">
                         <h4>Blog</h4>
                         <ul>
-                            <li><a href="https://szybkafucha.app/">Start</a></li>
-                            <li><a href="https://blog.szybkafucha.app/">Najnowsze wpisy</a></li>
+                            <li><a href="#top">Start</a></li>
+                            <li><a href="#posts">Najnowsze wpisy</a></li>
                         </ul>
                     </div>
                     <div class="footer__col">

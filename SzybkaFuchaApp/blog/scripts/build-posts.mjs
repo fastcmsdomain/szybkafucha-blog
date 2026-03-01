@@ -20,12 +20,18 @@ const __dirname = path.dirname(__filename);
 const BLOG_ROOT = path.join(__dirname, '..');
 const POSTS_DIR = path.join(BLOG_ROOT, 'content', 'posts');
 const IMAGES_SRC = path.join(BLOG_ROOT, 'content', 'images');
+const IMAGE_VARIANTS_DIR = path.join(BLOG_ROOT, '.cache', 'image-variants');
 const PUBLIC_BLOG = path.join(BLOG_ROOT, 'public', 'blog');
 const PUBLIC_IMAGES = path.join(BLOG_ROOT, 'public', 'images');
 const TEMPLATES_DIR = path.join(BLOG_ROOT, 'templates');
 const POST_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'post.html'), 'utf-8');
 const INDEX_TEMPLATE = fs.readFileSync(path.join(TEMPLATES_DIR, 'index.html'), 'utf-8');
 const SITE_URL = 'https://fastcmsdomain.github.io/szybkafucha-blog';
+const SITE_NAME = 'SzybkaFucha Blog';
+const SITE_LOCALE = 'pl_PL';
+const SITE_LANGUAGE = 'pl';
+const PUBLISHER_NAME = 'SzybkaFucha';
+const PUBLISHER_LOGO_URL = `${SITE_URL}/images/logo-512.png`;
 
 function fillTemplate(template, values) {
   return Object.entries(values).reduce((output, [key, value]) => {
@@ -97,6 +103,10 @@ function normalizeMarkdown(md) {
     .trim();
 }
 
+function jsonLd(data) {
+  return JSON.stringify(data, null, 2).replaceAll('</script>', '<\\/script>');
+}
+
 function formatDatePl(dateValue) {
   const date = new Date(dateValue);
   if (Number.isNaN(date.getTime())) {
@@ -108,6 +118,123 @@ function formatDatePl(dateValue) {
     month: 'long',
     year: 'numeric',
   }).format(date);
+}
+
+function getWarsawDateTime(dateValue) {
+  const base = new Date(`${dateValue}T09:00:00Z`);
+  if (Number.isNaN(base.getTime())) {
+    return dateValue || '';
+  }
+
+  const timeZoneName = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Warsaw',
+    timeZoneName: 'longOffset',
+    hour: '2-digit',
+  }).formatToParts(base).find(part => part.type === 'timeZoneName')?.value || 'GMT+00:00';
+
+  const offset = timeZoneName.replace('GMT', '');
+  return `${dateValue}T09:00:00${offset}`;
+}
+
+function readImageSize(filePath) {
+  if (!fs.existsSync(filePath)) return null;
+
+  const buffer = fs.readFileSync(filePath);
+  if (buffer.length < 24) return null;
+
+  // PNG
+  if (buffer[0] === 0x89 && buffer[1] === 0x50 && buffer[2] === 0x4e && buffer[3] === 0x47) {
+    return {
+      width: buffer.readUInt32BE(16),
+      height: buffer.readUInt32BE(20),
+    };
+  }
+
+  // JPEG
+  if (buffer[0] === 0xff && buffer[1] === 0xd8) {
+    let offset = 2;
+    while (offset < buffer.length) {
+      if (buffer[offset] !== 0xff) {
+        offset += 1;
+        continue;
+      }
+
+      const marker = buffer[offset + 1];
+      const size = buffer.readUInt16BE(offset + 2);
+
+      if (
+        [0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].includes(marker)
+      ) {
+        return {
+          height: buffer.readUInt16BE(offset + 5),
+          width: buffer.readUInt16BE(offset + 7),
+        };
+      }
+
+      offset += 2 + size;
+    }
+  }
+
+  return null;
+}
+
+function copyFileIfExists(sourcePath, destinationPath) {
+  if (!fs.existsSync(sourcePath)) return false;
+  fs.copyFileSync(sourcePath, destinationPath);
+  return true;
+}
+
+function getImageVariantNames(imageName) {
+  const baseName = path.parse(imageName).name;
+  const variants = {
+    avif: `${baseName}.avif`,
+    webp: `${baseName}.webp`,
+  };
+
+  return Object.fromEntries(
+    Object.entries(variants).map(([format, fileName]) => [
+      format,
+      fs.existsSync(path.join(IMAGE_VARIANTS_DIR, fileName)) ? fileName : '',
+    ]),
+  );
+}
+
+function copyImageAssets(imageName) {
+  const copied = {
+    original: '',
+    avif: '',
+    webp: '',
+  };
+
+  const originalSource = path.join(IMAGES_SRC, imageName);
+  const originalDest = path.join(PUBLIC_IMAGES, imageName);
+  if (copyFileIfExists(originalSource, originalDest)) {
+    copied.original = imageName;
+  }
+
+  const variants = getImageVariantNames(imageName);
+  for (const [format, fileName] of Object.entries(variants)) {
+    if (!fileName) continue;
+    const sourcePath = path.join(IMAGE_VARIANTS_DIR, fileName);
+    const destPath = path.join(PUBLIC_IMAGES, fileName);
+    if (copyFileIfExists(sourcePath, destPath)) {
+      copied[format] = fileName;
+    }
+  }
+
+  return copied;
+}
+
+function buildResponsiveImageMarkup({ imageName, alt, srcPrefix, imageWidth, imageHeight, loading = 'lazy', decoding = 'async', fetchPriority = '' }) {
+  if (!imageName) return '';
+
+  const variants = getImageVariantNames(imageName);
+  const sourceTags = [
+    variants.avif ? `<source srcset="${srcPrefix}${variants.avif}" type="image/avif">` : '',
+    variants.webp ? `<source srcset="${srcPrefix}${variants.webp}" type="image/webp">` : '',
+  ].filter(Boolean).join('');
+
+  return `<picture>${sourceTags}<img src="${srcPrefix}${imageName}" alt="${escapeHtml(alt)}" loading="${loading}"${fetchPriority ? ` fetchpriority="${fetchPriority}"` : ''} decoding="${decoding}"${imageWidth ? ` width="${imageWidth}"` : ''}${imageHeight ? ` height="${imageHeight}"` : ''}></picture>`;
 }
 
 function estimateReadingTime(text) {
@@ -270,6 +397,7 @@ function buildPost(filename) {
   const postUrl = `${SITE_URL}/blog/${frontmatter.slug}.html`;
   const imageUrl = frontmatter.image ? `${SITE_URL}/images/${frontmatter.image}` : '';
   const tags = Array.isArray(frontmatter.tags) ? frontmatter.tags : [];
+  const publishedDateTime = formatDatePl(frontmatter.date) ? getWarsawDateTime(frontmatter.date) : '';
   
   // Build tags HTML
   const tagsHtml = tags
@@ -278,28 +406,64 @@ function buildPost(filename) {
 
   // Featured image
   let imageHtml = '';
+  let imagePreload = '';
+  let imageMetaTags = '';
+  let articleMetaTags = '';
+  let imageStructuredData = '[]';
+  let imageWidth = '';
+  let imageHeight = '';
   if (frontmatter.image) {
+    const sourceImagePath = path.join(IMAGES_SRC, frontmatter.image);
+    const imageSize = readImageSize(sourceImagePath);
+    imageWidth = imageSize?.width ? String(imageSize.width) : '';
+    imageHeight = imageSize?.height ? String(imageSize.height) : '';
+    copyImageAssets(frontmatter.image);
+
     imageHtml = `
       <div class="article-cover">
-        <img src="../images/${frontmatter.image}" alt="${escapeHtml(frontmatter.title)}" loading="eager">
+        ${buildResponsiveImageMarkup({
+          imageName: frontmatter.image,
+          alt: frontmatter.title,
+          srcPrefix: '../images/',
+          imageWidth,
+          imageHeight,
+          loading: 'eager',
+          decoding: 'async',
+          fetchPriority: 'high',
+        })}
       </div>
     `;
+
+    imagePreload = `<link rel="preload" href="../images/${frontmatter.image}" as="image" fetchpriority="high">`;
+    imageMetaTags = [
+      `<meta property="og:image" content="${imageUrl}">`,
+      imageWidth ? `<meta property="og:image:width" content="${imageWidth}">` : '',
+      imageHeight ? `<meta property="og:image:height" content="${imageHeight}">` : '',
+      `<meta name="twitter:image" content="${imageUrl}">`,
+    ].filter(Boolean).join('\n    ');
+
+    imageStructuredData = jsonLd([
+      {
+        '@type': 'ImageObject',
+        url: imageUrl,
+        ...(imageWidth ? { width: Number(imageWidth) } : {}),
+        ...(imageHeight ? { height: Number(imageHeight) } : {}),
+      },
+    ]);
   }
 
-  // Copy image to public folder
-  if (frontmatter.image) {
-    const srcImg = path.join(IMAGES_SRC, frontmatter.image);
-    const destImg = path.join(PUBLIC_IMAGES, frontmatter.image);
-    if (fs.existsSync(srcImg)) {
-      fs.copyFileSync(srcImg, destImg);
-    }
-  }
-
+  articleMetaTags = [
+    publishedDateTime ? `<meta property="article:published_time" content="${publishedDateTime}">` : '',
+    publishedDateTime ? `<meta property="article:modified_time" content="${publishedDateTime}">` : '',
+    `<meta property="og:site_name" content="${SITE_NAME}">`,
+    ...tags.map(tag => `<meta property="article:tag" content="${escapeHtml(tag)}">`),
+  ].filter(Boolean).join('\n    ');
   // Build HTML
   let html = fillTemplate(POST_TEMPLATE, {
     TITLE: frontmatter.title || 'Bez tytułu',
     DATE: frontmatter.date || 'Brak daty',
     FORMATTED_DATE: formatDatePl(frontmatter.date),
+    DATE_TIME: publishedDateTime || frontmatter.date || '',
     TIME: timeValue,
     TIME_LABEL: timeLabel,
     COST: frontmatter.cost || 'Według materiałów',
@@ -313,6 +477,69 @@ function buildPost(filename) {
     POST_URL: postUrl,
     IMAGE_URL: imageUrl,
     TAGS_TEXT: escapeHtml(tags.join(', ') || 'dom, ogród, poradniki'),
+    SITE_URL,
+    SITE_NAME,
+    SITE_LOCALE,
+    SITE_LANGUAGE,
+    PUBLISHER_NAME,
+    PUBLISHER_LOGO_URL,
+    IMAGE_PRELOAD: imagePreload,
+    IMAGE_META_TAGS: imageMetaTags,
+    ARTICLE_META_TAGS: articleMetaTags,
+    ARTICLE_STRUCTURED_DATA: jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': postUrl,
+      },
+      headline: frontmatter.title || 'Bez tytułu',
+      description,
+      inLanguage: SITE_LANGUAGE,
+      datePublished: publishedDateTime || frontmatter.date,
+      dateModified: publishedDateTime || frontmatter.date,
+      author: {
+        '@type': 'Organization',
+        name: PUBLISHER_NAME,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: PUBLISHER_NAME,
+        logo: {
+          '@type': 'ImageObject',
+          url: PUBLISHER_LOGO_URL,
+        },
+      },
+      articleSection: tags[0] || 'poradniki',
+      keywords: tags.join(', '),
+      image: frontmatter.image
+        ? JSON.parse(imageStructuredData)
+        : undefined,
+    }),
+    BREADCRUMB_STRUCTURED_DATA: jsonLd({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Start',
+          item: `${SITE_URL}/`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Blog',
+          item: `${SITE_URL}/#posts`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: frontmatter.title || 'Bez tytułu',
+          item: postUrl,
+        },
+      ],
+    }),
   });
 
   // Write HTML
@@ -329,6 +556,8 @@ function buildPost(filename) {
     time: timeValue,
     cost: frontmatter.cost,
     tags: frontmatter.tags || [],
+    imageWidth,
+    imageHeight,
   };
 }
 
@@ -339,17 +568,25 @@ function buildIndex(posts) {
   const sortedPosts = posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
   const postsGrid = sortedPosts.map(post => `
-    <div class="post-card" onclick="window.location.href='blog/${post.slug}.html'">
-      ${post.image ? `<img src="images/${post.image}" alt="${post.title}">` : ''}
+    <a class="post-card" href="blog/${post.slug}.html" aria-label="Czytaj wpis: ${escapeHtml(post.title)}">
+      ${post.image ? buildResponsiveImageMarkup({
+        imageName: post.image,
+        alt: post.title,
+        srcPrefix: 'images/',
+        imageWidth: post.imageWidth,
+        imageHeight: post.imageHeight,
+        loading: 'lazy',
+        decoding: 'async',
+      }) : ''}
       <div class="post-card-content">
-        <h2>${post.title}</h2>
-        <p>${post.description}</p>
+        <h2>${escapeHtml(post.title)}</h2>
+        <p>${escapeHtml(post.description || '')}</p>
         <div class="post-meta">
-          <span>📅 ${post.date}</span>
-          <span>⏱️ ${post.time}</span>
+          <span>📅 ${escapeHtml(post.date || '')}</span>
+          <span>⏱️ ${escapeHtml(post.time || 'Czas czytania w budowie')}</span>
         </div>
       </div>
-    </div>
+    </a>
   `).join('\n');
 
   const indexHtml = INDEX_TEMPLATE.replace('{{POSTS_GRID}}', postsGrid);

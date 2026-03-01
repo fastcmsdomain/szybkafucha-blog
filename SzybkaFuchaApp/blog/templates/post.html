@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{TITLE}} | SzybkaFucha Blog</title>
     <meta name="description" content="{{DESCRIPTION}}">
+    <meta name="author" content="{{PUBLISHER_NAME}}">
     <meta name="keywords" content="{{TAGS_TEXT}}">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#e94560">
+    <meta name="color-scheme" content="light">
+    <meta name="format-detection" content="telephone=no">
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{POST_URL}}">
     <meta property="og:title" content="{{TITLE}}">
     <meta property="og:description" content="{{DESCRIPTION}}">
-    <meta property="og:image" content="{{IMAGE_URL}}">
     <meta property="og:locale" content="pl_PL">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{TITLE}}">
     <meta name="twitter:description" content="{{DESCRIPTION}}">
-    <meta name="twitter:image" content="{{IMAGE_URL}}">
     <link rel="canonical" href="{{POST_URL}}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Nunito:wght@800&display=swap">
+    {{IMAGE_PRELOAD}}
+    {{ARTICLE_META_TAGS}}
+    {{IMAGE_META_TAGS}}
     <style>
         :root {
             --color-primary: #e94560;
@@ -38,8 +39,8 @@
             --color-footer-surface: #1f2937;
             --color-footer-text: #d1d5db;
             --color-footer-muted: #9ca3af;
-            --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            --font-heading: "Nunito", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            --font-heading: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             --shadow-card: 0 20px 45px rgba(17, 24, 39, 0.08);
             --shadow-card-hover: 0 28px 55px rgba(17, 24, 39, 0.14);
             --shadow-header: 0 10px 35px rgba(17, 24, 39, 0.06);
@@ -79,6 +80,12 @@
         a {
             color: inherit;
             text-decoration: none;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
+            outline: 3px solid rgba(233, 69, 96, 0.35);
+            outline-offset: 3px;
         }
 
         img {
@@ -375,6 +382,7 @@
             width: 100%;
             aspect-ratio: 16 / 9;
             object-fit: cover;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
         }
 
         .article-card {
@@ -437,6 +445,12 @@
 
         .article-body strong {
             color: #111827;
+        }
+
+        .article-body a {
+            color: var(--color-primary-dark);
+            text-decoration: underline;
+            text-underline-offset: 0.18em;
         }
 
         .article-cta {
@@ -569,6 +583,20 @@
             font-size: 0.95rem;
         }
 
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
         @media (min-width: 900px) {
             .header__nav {
                 display: inline-flex;
@@ -604,29 +632,8 @@
             }
         }
     </style>
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "BlogPosting",
-            "headline": "{{TITLE}}",
-            "description": "{{DESCRIPTION}}",
-            "image": "{{IMAGE_URL}}",
-            "datePublished": "{{DATE}}",
-            "dateModified": "{{DATE}}",
-            "author": {
-                "@type": "Organization",
-                "name": "SzybkaFucha"
-            },
-            "publisher": {
-                "@type": "Organization",
-                "name": "SzybkaFucha"
-            },
-            "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": "{{POST_URL}}"
-            }
-        }
-    </script>
+    <script type="application/ld+json">{{ARTICLE_STRUCTURED_DATA}}</script>
+    <script type="application/ld+json">{{BREADCRUMB_STRUCTURED_DATA}}</script>
 </head>
 <body>
     <a href="#main" class="skip-link">Przejdź do głównej treści</a>
@@ -638,8 +645,8 @@
                 <span class="logo-text">Szybka<b>Fucha</b></span>
             </a>
             <nav class="header__nav" aria-label="Główna nawigacja">
-                <a href="https://szybkafucha.app/" class="nav-link">Start</a>
-                <a href="https://blog.szybkafucha.app/" class="nav-link">Najnowsze wpisy</a>
+                <a href="../index.html#top" class="nav-link">Start</a>
+                <a href="../index.html#posts" class="nav-link">Najnowsze wpisy</a>
             </nav>
             <button class="mobile-menu-btn" aria-label="Otwórz menu" aria-expanded="false" aria-controls="mobile-nav">
                 <span></span>
@@ -651,24 +658,24 @@
 
     <div id="mobile-nav" class="mobile-nav" aria-hidden="true">
         <nav aria-label="Menu mobilne">
-            <a href="https://szybkafucha.app/" class="mobile-nav__link">Start</a>
-            <a href="https://blog.szybkafucha.app/" class="mobile-nav__link">Najnowsze wpisy</a>
+            <a href="../index.html#top" class="mobile-nav__link">Start</a>
+            <a href="../index.html#posts" class="mobile-nav__link">Najnowsze wpisy</a>
         </nav>
     </div>
 
     <main id="main" class="article-page">
         <section class="article-hero">
             <div class="container">
-                <div class="article-breadcrumb" aria-label="Breadcrumb">
+                <nav class="article-breadcrumb" aria-label="Breadcrumb">
                     <a href="../index.html#top">Start</a>
                     <span>/</span>
                     <a href="../index.html#posts">Blog</a>
                     <span>/</span>
                     <span aria-current="page">{{TITLE}}</span>
-                </div>
-                <h1 class="article-title">{{TITLE}}</h1>
+                </nav>
+                <h1 id="article-title" class="article-title">{{TITLE}}</h1>
                 <div class="article-meta">
-                    <span class="article-meta__item">📅 {{FORMATTED_DATE}}</span>
+                    <span class="article-meta__item">📅 <time datetime="{{DATE_TIME}}">{{FORMATTED_DATE}}</time></span>
                     <span class="article-meta__item">⏱️ {{TIME_LABEL}}: {{TIME}}</span>
                     <span class="article-meta__item">💸 Koszt: {{COST}}</span>
                     <span class="article-meta__item">🛠️ Poziom: {{DIFFICULTY}}/5</span>
@@ -683,7 +690,7 @@
             <div class="container">
                 {{FEATURED_IMAGE}}
 
-                <article class="article-card{{NO_COVER_CLASS}}">
+                <article class="article-card{{NO_COVER_CLASS}}" aria-labelledby="article-title">
                     <p class="article-lead">{{LEAD}}</p>
                     <div class="article-body">
                         {{CONTENT}}
@@ -724,8 +731,8 @@
                     <div class="footer__col">
                         <h4>Blog</h4>
                         <ul>
-                            <li><a href="https://blog.szybkafucha.app/">Najnowsze wpisy</a></li>
-                            <li><a href="https://szybkafucha.app/" class="nav-link nav-link--cta">Start</a></li>
+                            <li><a href="../index.html#posts">Najnowsze wpisy</a></li>
+                            <li><a href="../index.html#top">Start</a></li>
                         </ul>
                     </div>
                     <div class="footer__col">

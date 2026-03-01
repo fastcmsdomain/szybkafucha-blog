@@ -28,6 +28,7 @@ cd "$BLOG_DIR"
 
 IMAGE_PROVIDER="${BLOG_IMAGE_PROVIDER:-replicate}"
 AUTO_IMAGES="${BLOG_AUTO_GENERATE_IMAGES:-true}"
+AUTO_OPTIMIZE_IMAGES="${BLOG_AUTO_OPTIMIZE_IMAGES:-true}"
 
 if [ "$AUTO_IMAGES" = "true" ]; then
     if [ "$IMAGE_PROVIDER" = "replicate" ] && [ -z "${REPLICATE_API_TOKEN:-}" ]; then
@@ -36,6 +37,11 @@ if [ "$AUTO_IMAGES" = "true" ]; then
         echo "🖼️  Generating missing hero images with provider: $IMAGE_PROVIDER"
         npm run image:hero -- --missing --provider "$IMAGE_PROVIDER"
     fi
+fi
+
+if [ "$AUTO_OPTIMIZE_IMAGES" = "true" ]; then
+    echo "🗜️  Optimizing local image variants when tools are available"
+    npm run images:optimize || echo "ℹ️  Image optimization skipped or failed locally."
 fi
 
 npm run build
