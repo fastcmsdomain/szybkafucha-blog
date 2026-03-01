@@ -2,7 +2,7 @@
 title: "Jak zalepić pęknięcie w ścianie gipsowej — prosty poradnik"
 date: "2026-02-29"
 slug: "pekniecie-sciana"
-image: "2026-02-29-pekniecie-sciana.jpg"
+image: "pekniecie-sciana.jpg"
 description: "Naprawa pęknięcia w gipsie to łatwa robota dla początkujących. Dowiedz się, jak to zrobić bez specjalnych umiejętności"
 difficulty: 1
 time: "20–30 minut (+ czas schnięcia)"
