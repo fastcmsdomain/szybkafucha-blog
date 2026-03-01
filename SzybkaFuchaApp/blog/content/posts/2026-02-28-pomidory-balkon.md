@@ -2,7 +2,7 @@
 title: "Jak uprawiać pomidory na balkonie — od sadzonki do owocu"
 date: "2026-02-28"
 slug: "pomidory-balkon"
-image: "2026-02-28-pomidory-balkon.jpg"
+image: "pomidory-na-balkonie.jpg"
 description: "Poradnik dla początkujących: uprawiaj smaczne pomidory w donicach na balkonie, nawet bez doświadczenia"
 difficulty: 1
 time: "30 minut (przygotowanie) + cotygodniowa pielęgnacja"
