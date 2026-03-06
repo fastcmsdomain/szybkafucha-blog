@@ -2,7 +2,7 @@
 title: "Jak pozbyć się chwastów naturalnie"
 date: "2026-03-06"
 slug: "pozbyc-sie-chwastow-naturalnie"
-image: "2026-03-06-pozbyc-sie-chwastow-naturalnie.jpg"
+image: "2026-03-07-pozbyc-sie-chwastow-naturalnie.jpg"
 description: "Odkryj naturalne metody walki z chwastami w ogrodzie, przyjazne dla środowiska i Twojego portfela."
 difficulty: 1
 time: "30 minut"
