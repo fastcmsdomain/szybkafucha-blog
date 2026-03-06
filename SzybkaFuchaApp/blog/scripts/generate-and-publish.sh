@@ -20,6 +20,14 @@ BOOT_MD="$BLOG_DIR/BOOT.md"
 TODAY="$(date +%F)"
 DRY_RUN="${1:-}"
 
+ENV_FILE="$BLOG_DIR/.env"
+if [[ -f "$ENV_FILE" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    . "$ENV_FILE"
+    set +a
+fi
+
 OLLAMA_URL="${OLLAMA_URL:-http://127.0.0.1:11434/api/generate}"
 OLLAMA_MODEL="${OLLAMA_MODEL:-SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M}"
 
@@ -60,9 +68,9 @@ pick_next_topic() {
     # Extract first unchecked topic from the target section
     local topic
     if [[ "$next_section" == "DOM" ]]; then
-        topic=$(sed -n '/^## DOM/,/^## OGRÓD/p' "$BACKLOG" | grep '^\- \[ \]' | head -1)
+        topic=$(sed -n '/^## DOM/,/^## OGRÓD/p' "$BACKLOG" | grep '^\- \[ \]' | grep -v '✅' | head -1)
     else
-        topic=$(sed -n '/^## OGRÓD/,/^---/p' "$BACKLOG" | grep '^\- \[ \]' | head -1)
+        topic=$(sed -n '/^## OGRÓD/,/^---/p' "$BACKLOG" | grep '^\- \[ \]' | grep -v '✅' | head -1)
     fi
 
     # Skip safety hard-stop topics
@@ -90,8 +98,8 @@ pick_next_topic() {
         exit 1
     fi
 
-    # Extract just the topic text
-    echo "$topic" | sed 's/^- \[ \] //'
+    # Extract just the topic text (strip checkbox and any stale ✅ marks)
+    echo "$topic" | sed 's/^- \[ \] //' | sed 's/ *✅.*//'
 }
 
 # --- Generate slug from topic ---
@@ -262,6 +270,8 @@ if [[ -z "$RAW_CONTENT" ]]; then
 fi
 
 # 3. Fix and save post
+# Strip leading blank lines before frontmatter
+RAW_CONTENT=$(echo "$RAW_CONTENT" | sed '/./,$!d')
 CONTENT=$(fix_frontmatter "$RAW_CONTENT")
 
 # Ensure CTA has correct links
