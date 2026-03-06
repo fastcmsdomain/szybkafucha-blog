@@ -184,12 +184,14 @@ MSG
     echo "  Posting to Facebook Page..."
     local response
     response=$(curl -s -X POST "https://graph.facebook.com/v19.0/${FB_PAGE_ID}/feed" \
-        -d "message=$(python3 -c "import urllib.parse; print(urllib.parse.quote('''$message'''))")" \
+        --data-urlencode "message=$message" \
         -d "link=$post_url" \
         -d "access_token=$FB_PAGE_ACCESS_TOKEN")
 
-    if echo "$response" | grep -q '"id"'; then
-        echo "  Facebook post published: $(echo "$response" | python3 -c "import sys,json; print(json.load(sys.stdin).get('id',''))")"
+    if echo "$response" | python3 -c "import sys,json; d=json.load(sys.stdin); sys.exit(0 if 'id' in d else 1)" 2>/dev/null; then
+        local fb_id
+        fb_id=$(echo "$response" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+        echo "  Facebook post published: $fb_id"
     else
         echo "  Facebook post failed: $response" >&2
     fi
@@ -229,15 +231,27 @@ fi
 echo "  Generating post via Bielik (this may take 2-5 minutes)..."
 PROMPT=$(build_prompt "$TOPIC" "$SLUG" "$TAGS")
 
-RESPONSE=$(curl -s "$OLLAMA_URL" -d "$(python3 -c "
+# Write prompt to temp file to avoid shell quoting issues
+PROMPT_TMPFILE=$(mktemp)
+echo "$PROMPT" > "$PROMPT_TMPFILE"
+
+PAYLOAD_TMPFILE=$(mktemp)
+python3 -c "
 import json, sys
-print(json.dumps({
+with open('$PROMPT_TMPFILE', 'r') as f:
+    prompt = f.read()
+payload = {
     'model': '$OLLAMA_MODEL',
-    'prompt': $(python3 -c "import json; print(json.dumps('''$PROMPT'''))"),
+    'prompt': prompt,
     'stream': False,
     'options': {'num_predict': 4096, 'temperature': 0.7}
-}))
-")" 2>&1)
+}
+with open('$PAYLOAD_TMPFILE', 'w') as f:
+    json.dump(payload, f)
+"
+
+RESPONSE=$(curl -s "$OLLAMA_URL" -d @"$PAYLOAD_TMPFILE" 2>&1)
+rm -f "$PROMPT_TMPFILE" "$PAYLOAD_TMPFILE"
 
 RAW_CONTENT=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['response'])" 2>/dev/null)
 
