@@ -2,10 +2,10 @@
 
 ## DOM (Home) Topics
 
-- [ ] Jak naprawić nieszczelnący kran
+- [x] Jak naprawić nieszczelnący kran ✅ 2026-02-27
 - [ ] Jak wymienić uszkodzony gniazdko elektryczne (bezpiecznie)
 - [x] Jak zalepić pęknięcie w ścianie gipsowej ✅ 2026-02-29
-- [ ] Jak wyczyścić zatkany odpływ
+- [x] Jak wyczyścić zatkany odpływ ✅ 2026-03-06
 - [ ] Jak wymienić glazurę w łazience
 - [ ] Jak zainstalować półkę ścienną bez wiercenia
 - [ ] Jak naprawić trzaskające drzwi
@@ -18,7 +18,7 @@
 ## OGRÓD (Garden) Topics
 
 - [x] Jak uprawiać pomidory na balkonie ✅ 2026-02-28
-- [ ] Jak zrobić komposter domowy
+- [x] Jak zrobić komposter domowy ✅ 2026-03-01
 - [ ] Jak pozbyć się chwastów naturalnie
 - [ ] Jak zadbać o róże zimą
 - [ ] Jak rozmnażać rośliny z sadzonek
