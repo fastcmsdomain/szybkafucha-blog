@@ -19,7 +19,7 @@
 
 - [x] Jak uprawiać pomidory na balkonie ✅ 2026-02-28
 - [x] Jak zrobić komposter domowy ✅ 2026-03-01
-- [ ] Jak pozbyć się chwastów naturalnie
+- [x] Jak pozbyć się chwastów naturalnie ✅ 2026-03-06
 - [ ] Jak zadbać o róże zimą
 - [ ] Jak rozmnażać rośliny z sadzonek
 - [ ] Jak walczyć z mszycami bez pestycydów
