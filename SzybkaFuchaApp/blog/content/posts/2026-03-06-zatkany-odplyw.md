@@ -48,4 +48,4 @@ Wietrz pomieszczenie podczas używania sody i octu. Nie mieszaj domowych metod z
 
 ---
 
-Potrzebujesz więcej porad? Odwiedź [BlogSzybkaFucha.pl](https://blog.szybkafucha.pl) lub znajdź fachowca w 5 minu [SzybkaFucha.pl](https://szybkafucha.pl).
+Potrzebujesz więcej porad? Odwiedź [BlogSzybkaFucha.app](https://blog.szybkafucha.app) lub znajdź fachowca w 5 minut na [SzybkaFucha.app](https://szybkafucha.app).
