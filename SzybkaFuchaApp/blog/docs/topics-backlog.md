@@ -6,7 +6,7 @@
 - [ ] Jak wymienić uszkodzony gniazdko elektryczne (bezpiecznie)
 - [x] Jak zalepić pęknięcie w ścianie gipsowej ✅ 2026-02-29
 - [x] Jak wyczyścić zatkany odpływ ✅ 2026-03-06
-- [ ] Jak wymienić glazurę w łazience
+- [x] Jak wymienić glazurę w łazience ✅ 2026-03-24
 - [ ] Jak zainstalować półkę ścienną bez wiercenia
 - [ ] Jak naprawić trzaskające drzwi
 - [ ] Jak wyeliminować wilgoć w piwnicy
